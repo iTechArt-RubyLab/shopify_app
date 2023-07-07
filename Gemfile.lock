@@ -155,7 +155,8 @@ GEM
     reline (0.3.5)
       io-console (~> 0.5)
     securerandom (0.2.2)
-    shopify_api (12.2.1)
+    shopify_api (13.0.0)
+      activesupport
       concurrent-ruby
       hash_diff
       httparty
@@ -164,16 +165,18 @@ GEM
       openssl
       securerandom
       sorbet-runtime
-      zeitwerk (~> 2.5)
+      zeitwerk (~> 2.5, < 2.6.5)
     sorbet-runtime (0.5.10904)
     thor (1.2.2)
     timeout (0.4.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    tzinfo-data (1.2023.3)
+      tzinfo (>= 1.0.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.6.8)
+    zeitwerk (2.6.4)
 
 PLATFORMS
   x86_64-linux
@@ -184,7 +187,7 @@ DEPENDENCIES
   pg (~> 1.1)
   puma (~> 5.0)
   rails (~> 7.0.4, >= 7.0.4.3)
-  shopify_api
+  shopify_api (~> 13.0)
   tzinfo-data
 
 RUBY VERSION
