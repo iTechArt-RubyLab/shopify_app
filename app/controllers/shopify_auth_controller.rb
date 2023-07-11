@@ -27,11 +27,10 @@ class ShopifyAuthController < ApplicationController
         expires: auth_result[:cookie].expires,
         secure: true,
         http_only: true,
-        value: auth_result[:cookie].value
+        value: auth_result[:session].access_token
       }
   
       puts("OAuth complete! New access token: #{auth_result[:session].access_token}")
-  
       head 307
       response.set_header("Location", "/")
   end

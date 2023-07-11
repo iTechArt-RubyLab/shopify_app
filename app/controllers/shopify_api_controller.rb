@@ -1,7 +1,7 @@
 class ShopifyApiController < ApplicationController
 
   def products
-      query = <<~GQL
+    query = <<~GQL
     {
       products (first: 3) {
         edges {
@@ -12,18 +12,17 @@ class ShopifyApiController < ApplicationController
         }
       }
     }
-  GQL
-  session = ShopifyAPI::Utils::SessionUtils.load_current_session(
-    auth_header: cookies[:shopify_app_session],
-    cookies: cookies,
-    is_online: true
+    GQL
+  session = ShopifyAPI::Auth::Session.new(
+    shop: ENV['SHOP'],
+    access_token: cookies[:shopify_app_session]
   )
 
   client = ShopifyAPI::Clients::Graphql::Admin.new(
     session: session
   )
 
-  products = client.query(
+  @products = client.query(
     query: query
   )
   end
