@@ -1,23 +1,30 @@
 class ShopifyApiController < ApplicationController
+
   def products
-    storefront_access_token = ENV['STOREFRONT_ACCESS_TOKEN']
-    shop = ENV['SHOP']
-    storefront_client = ShopifyAPI::Clients::Graphql::Storefront.new(
-      shop,
-      storefront_access_token
-    )
-    my_query = <<~QUERY
-      {
-        products (first: 3) {
-          edges {
-            node {
-              id
-              title
-            }
+      query = <<~GQL
+    {
+      products (first: 3) {
+        edges {
+          node {
+            id
+            title
           }
         }
       }
-    QUERY
-    @products = storefront_client.query(query: my_query)
+    }
+  GQL
+  session = ShopifyAPI::Utils::SessionUtils.load_current_session(
+    auth_header: cookies[:shopify_app_session],
+    cookies: cookies,
+    is_online: true
+  )
+
+  client = ShopifyAPI::Clients::Graphql::Admin.new(
+    session: session
+  )
+
+  products = client.query(
+    query: query
+  )
   end
 end

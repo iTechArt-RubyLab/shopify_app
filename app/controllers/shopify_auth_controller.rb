@@ -1,5 +1,5 @@
 class ShopifyAuthController < ApplicationController
-  include ActionController::Cookies
+  
 
 	def login
     shop = request.headers["Shop"]
@@ -18,10 +18,9 @@ class ShopifyAuthController < ApplicationController
   end
 
   def callback
-    begin
       auth_result = ShopifyAPI::Auth::Oauth.validate_auth_callback(
         cookies: cookies.to_h,
-        auth_query: ShopifyAPI::Auth::Oauth::AuthQuery.new(request.parameters.symbolize_keys.except(:controller, :action))
+        auth_query: ShopifyAPI::Auth::Oauth::AuthQuery.new(**request.parameters.symbolize_keys.except(:controller, :action))
       )
   
       cookies[auth_result[:cookie].name] = {
@@ -34,10 +33,6 @@ class ShopifyAuthController < ApplicationController
       puts("OAuth complete! New access token: #{auth_result[:session].access_token}")
   
       head 307
-      response.set_header("Location", "<some-redirect-url>")
-    rescue => e
-      puts(e.message)
-      head 500
-    end
+      response.set_header("Location", "/")
   end
 end
