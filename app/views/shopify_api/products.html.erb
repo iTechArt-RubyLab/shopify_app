@@ -1,0 +1,1 @@
+<%= @products.body.deep_symbolize_keys.dig(:data, :products, :edges).map{_1.dig(:node, :title)} %>
