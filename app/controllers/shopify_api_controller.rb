@@ -1,8 +1,10 @@
 class ShopifyApiController < ApplicationController
+  before_action :authenticate_shopify_session
+
   def products
     query = <<~GQL
       {
-        products (first: 3) {
+        products(first: 3) {
           edges {
             node {
               id
@@ -12,17 +14,15 @@ class ShopifyApiController < ApplicationController
         }
       }
     GQL
-    session = ShopifyAPI::Auth::Session.new(
-      shop: ENV['SHOP'],
-      access_token: cookies[:shopify_app_session]
-    )
 
-    client = ShopifyAPI::Clients::Graphql::Admin.new(
-      session:
-    )
+    @products = @shopify_client.query(query:)
+    render json: @products.body
+  end
 
-    @products = client.query(
-      query:
-    )
+  private
+
+  def authenticate_shopify_session
+    session = ShopifyAPI::Auth::Session.new(shop: ENV['SHOP'], access_token: cookies[:shopify_app_session])
+    @shopify_client = ShopifyAPI::Clients::Graphql::Admin.new(session:)
   end
 end

@@ -1,7 +1,5 @@
 class ShopifyAuthController < ApplicationController
   def login
-    request.headers['Shop']
-
     auth_response = ShopifyAPI::Auth::Oauth.begin_auth(shop: ENV['SHOP'], redirect_path: '/auth/callback')
 
     cookies[auth_response[:cookie].name] = {
@@ -29,8 +27,10 @@ class ShopifyAuthController < ApplicationController
       value: auth_result[:session].access_token
     }
 
-    Rails.logger.debug("OAuth complete! New access token: #{auth_result[:session].access_token}")
     head :temporary_redirect
-    response.set_header('Location', '/')
+    response.set_header('Location', root_path)
+  rescue StandardError => e
+    Rails.logger.debug(e.message)
+    head :internal_server_error
   end
 end
