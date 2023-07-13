@@ -92,9 +92,6 @@ GEM
     io-console (0.6.0)
     irb (1.7.1)
       reline (>= 0.3.0)
-    jbuilder (2.11.5)
-      actionview (>= 5.0.0)
-      activesupport (>= 5.0.0)
     json (2.6.3)
     jwt (2.7.1)
     language_server-protocol (3.17.0.3)
@@ -122,6 +119,8 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     nio4r (2.5.9)
+    nokogiri (1.15.3-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.15.3-x86_64-linux)
       racc (~> 1.4)
     oj (3.15.0)
@@ -213,13 +212,13 @@ GEM
     zeitwerk (2.6.4)
 
 PLATFORMS
+  arm64-darwin-22
   x86_64-linux
 
 DEPENDENCIES
   bootsnap
   debug
   dotenv-rails (~> 2.8, >= 2.8.1)
-  jbuilder
   pg (~> 1.1)
   puma (~> 5.0)
   rails (~> 7.0.4, >= 7.0.4.3)
