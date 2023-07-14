@@ -1,6 +1,7 @@
 class CreateCustomers < ActiveRecord::Migration[7.0]
   def change
     create_table :customers do |t|
+      t.integer :shopify_id
       t.string :email
       t.string :first_name
       t.string :last_name
@@ -18,8 +19,7 @@ class CreateCustomers < ActiveRecord::Migration[7.0]
       t.boolean :tax_exempt
       t.string :multipass_identifier
       t.string :note
-      t.string :password
-      t.string :password_confirmation
+
 
       t.timestamps
     end
