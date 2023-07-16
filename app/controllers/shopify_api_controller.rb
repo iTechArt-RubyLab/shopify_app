@@ -22,7 +22,7 @@ class ShopifyApiController < ApplicationController
   private
 
   def authenticate_shopify_session
-    session = ShopifyAPI::Auth::Session.new(shop: ENV['SHOP'], access_token: cookies[:shopify_app_session])
-    @shopify_client = ShopifyAPI::Clients::Graphql::Admin.new(session:)
+    @session = ShopifyAPI::Auth::Session.new(shop: ENV['SHOP'], access_token: cookies[:shopify_app_session])
+    @shopify_client = ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
   end
 end
