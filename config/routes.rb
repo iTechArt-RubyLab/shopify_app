@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
+  root 'shopify_api#products'
+  get '/login', to: 'shopify_auth#login'
+  get '/auth/callback', to: 'shopify_auth#callback'
+  resources :orders, only: [:index, :show]
 end
