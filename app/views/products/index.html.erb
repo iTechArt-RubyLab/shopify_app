@@ -10,7 +10,7 @@
   </tr>
  <% @products.preload(:product_variants).each do |product| %>
     <tr>
-      <td><%= product.title %></td>
+      <td><%= link_to product.title, product_path(product) %></td>
       <td><%= product.body_html %></td>
       <td><%= product.status %></td>
       <td><%= product.vendor %></td>
