@@ -1,0 +1,35 @@
+<h1>Редактировать заказ</h1>
+
+<%= form_with(model: @order, url: order_path(@order), method: :patch) do |form| %>
+  <% if @order.errors.any? %>
+    <div id="error_explanation">
+      <h2>Ошибка при сохранении заказа:</h2>
+      <ul>
+        <% @order.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :shopify_id %>
+    <%= form.number_field :shopify_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :total_price %>
+    <%= form.number_field :total_price %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Сохранить" %>
+  </div>
+<% end %>
+
+<%= link_to 'Назад', orders_path %>
