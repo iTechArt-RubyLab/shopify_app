@@ -8,7 +8,7 @@
     <th>Vendor</th>
     <th>Average price</th>
   </tr>
-  <% @products.each do |product| %>
+ <% @products.preload(:product_variants).each do |product| %>
     <tr>
       <td><%= product.title %></td>
       <td><%= product.body_html %></td>
