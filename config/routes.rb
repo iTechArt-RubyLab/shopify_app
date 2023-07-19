@@ -3,5 +3,5 @@ Rails.application.routes.draw do
   get '/login', to: 'shopify_auth#login'
   get '/auth/callback', to: 'shopify_auth#callback'
   resources :orders, only: [:index, :show]
-  resources :products, only: [:index, :show]
+  resources :products
 end

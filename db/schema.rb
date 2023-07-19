@@ -14,6 +14,47 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_14_111532) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "addresses", force: :cascade do |t|
+    t.integer "customer_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "company"
+    t.string "address1"
+    t.string "address2"
+    t.string "city"
+    t.string "province"
+    t.string "country"
+    t.string "zip"
+    t.string "phone"
+    t.string "province_code"
+    t.string "country_code"
+    t.string "country_name"
+    t.boolean "is_default"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.integer "shopify_id"
+    t.string "email"
+    t.string "first_name"
+    t.string "last_name"
+    t.boolean "accepts_marketing"
+    t.datetime "accepts_marketing_updated_at"
+    t.string "tags"
+    t.boolean "verified_email"
+    t.string "state"
+    t.integer "last_order_id"
+    t.string "last_order_name"
+    t.integer "orders_count"
+    t.string "total_spent"
+    t.boolean "tax_exempt"
+    t.string "multipass_identifier"
+    t.string "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "discount_allocations", force: :cascade do |t|
     t.decimal "amount"
     t.integer "discount_application_index"
@@ -21,6 +62,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_14_111532) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["line_item_id"], name: "index_discount_allocations_on_line_item_id"
+  end
+
+  create_table "email_marketing_consents", force: :cascade do |t|
+    t.integer "customer_id"
+    t.string "state"
+    t.string "opt_in_level"
+    t.datetime "consent_updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "line_items", force: :cascade do |t|
@@ -48,6 +98,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_14_111532) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_line_items_on_order_id"
+  end
+
+  create_table "metafields", force: :cascade do |t|
+    t.integer "customer_id"
+    t.string "key"
+    t.string "namespace"
+    t.string "value"
+    t.string "value_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "orders", force: :cascade do |t|
@@ -142,6 +202,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_14_111532) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["line_item_id"], name: "index_properties_on_line_item_id"
+  end
+
+  create_table "sms_marketing_consents", force: :cascade do |t|
+    t.integer "customer_id"
+    t.string "state"
+    t.string "opt_in_level"
+    t.datetime "consent_updated_at"
+    t.string "consent_collected_from"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tax_lines", force: :cascade do |t|
