@@ -2,11 +2,11 @@
 <p><strong>Name:</strong> <%= @order.name %></p>
 <p><strong>Total Price:</strong> <%= @order.total_price %></p>
 
-<h2>Позиции заказа:</h2>
+<h2>Line items:</h2>
 <ul>
   <% @order.line_items.each do |line_item| %>
     <li><%= line_item.name %> - <%= line_item.price %></li>
   <% end %>
 </ul>
 
-<%= link_to 'Назад к списку заказов', orders_path %>
+<%= link_to 'Back to list', orders_path %>

@@ -18,8 +18,11 @@
       <td><%= order.total_price %></td>
       <td><%= order.created_at %></td>
       <td><%= order.updated_at %></td>
-      <td><%= link_to 'Удалить', order_path(order), method: :delete, data: { confirm: 'Вы уверены?' } %></td>
+      <td><%= link_to 'Edit', edit_order_path(order) %></td>
+      <td><%= button_to 'Delete', order, method: :delete, class: 'btn btn-outline-danger btn-sm' %></td>
     </tr>
   <% end %>
   </tbody>
 </table>
+
+<%= link_to 'Create new order', new_order_path %>
