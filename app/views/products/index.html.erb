@@ -6,15 +6,18 @@
     <th>Description</th>
     <th>Status</th>
     <th>Vendor</th>
-    <th>Average price</th>
+    <th></th>
+    <th></th>
   </tr>
- <% @products.preload(:product_variants).each do |product| %>
+  <% @products.preload(:product_variants).each do |product| %>
     <tr>
       <td><%= link_to product.title, product_path(product) %></td>
       <td><%= product.body_html %></td>
       <td><%= product.status %></td>
       <td><%= product.vendor %></td>
-      <td><%= product.product_variants.pluck(:price).map(&:to_f).sum / product.product_variants.count %></td>
+      <td><%= link_to 'Edit', edit_product_path(product) %></td>
+      <td><%= button_to 'Destroy', product_path(product), method: :delete, data: { confirm: 'Are you sure?' } %></td>
     </tr>
   <% end %>
 </table>
+
