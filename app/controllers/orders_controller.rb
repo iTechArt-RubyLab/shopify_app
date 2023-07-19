@@ -1,29 +1,46 @@
 class OrdersController < ApplicationController
+  before_action :set_order, only: %i[show edit update destroy cancel]
+  before_action :create_session, only: %i[create update destroy cancel]
+
   def index
     @orders = Order.all
   end
 
-  def show
-    @order = Order.find(params[:id])
+  def show ;end
+
+  def new
+    @order = Order.new
   end
 
+  def edit; end
+
   def create
-    @order = Order.new(order_params)
-    if @order.save
-      # Если заказ успешно создан, выполните необходимые действия
-      # например, отправка данных в Shopify или обновление статуса заказа
-      redirect_to @order, notice: 'Заказ успешно создан.'
+    @shopify_order = ShopifyAPI::Order.new(session: @session)
+    assign_order_attributes
+    @local_order = Order.new(order_params)
+
+    if @shopify_order.save!
+      @local_order.shopify_id = @shopify_order.id
+      @local_order.name = @shopify_order.name
+      @local_order.save!
+      redirect_to orders_path, notice: 'Order was successfully created.'
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
   def update
-    @order = Order.find(params[:id])
-    if @order.update(order_params)
-      # Если заказ успешно обновлен, выполните необходимые действия
-      # например, отправка данных в Shopify или обновление статуса заказа
-      redirect_to @order, notice: 'Заказ успешно обновлен.'
+    @shopify_order = ShopifyAPI::Order.find(session: @session, id: @order.shopify_id)
+    assign_order_attributes
+    @shopify_order.transactions = [
+      {
+        "kind" => "sale",
+        "status" => "success",
+        "amount" => 111.22
+      }
+    ]
+    if @shopify_order.save! && @order.update(order_params)
+      redirect_to @order, notice: 'Order was successfully updated.'
     else
       render :edit
     end
@@ -31,12 +48,8 @@ class OrdersController < ApplicationController
 
 
   def cancel
-    @order = Order.find(params[:id])
-    # Логика для отмены заказа с использованием Shopify API
-    # Например, отправка запроса на отмену заказа в Shopify
-    # и обновление соответствующего статуса в базе данных
-    if @order.cancel
-      # Если заказ успешно отменен, выполните необходимые действия
+    @shopify_order = ShopifyAPI::Order.find(session: @session, id: @order.shopify_id)
+    if @shopify_order.cancel
       redirect_to @order, notice: 'Заказ успешно отменен.'
     else
       redirect_to @order, alert: 'Ошибка при отмене заказа.'
@@ -45,16 +58,51 @@ class OrdersController < ApplicationController
 
 
   def destroy
-    @order = Order.find(params[:id])
-    @order.destroy
+    @shopify_order = ShopifyAPI::Order.find(session: @session, id: @order.shopify_id)
+    if @order.destroy && @shopify_order.delete
+      redirect_to orders_path, notice: 'The Order was successfully destroyed.'
+    end
 
-    redirect_to orders_path, notice: 'Заказ успешно удален.'
   end
 
   private
 
-  # Метод для разрешения параметров заказа, которые можно передать через запрос
+  def set_order
+    @order = Order.find(params[:id])
+  end
+
   def order_params
-    params.require(:order).permit(:shopify_id, :name, :total_price)
+    params.require(:order).permit(:name, :total_price)
+  end
+
+  def assign_order_attributes
+    @shopify_order.line_items = [
+      {
+        "title" => "Big Brown Bear Boots",
+        "price" => 60.00,
+        "grams" => "1300",
+        "quantity" => 3,
+        "tax_lines" => [
+          {
+            "price" => 13.5,
+            "rate" => 0.06,
+            "title" => "State tax"
+          }
+        ]
+      }
+    ]
+    @shopify_order.transactions = [
+      {
+        "kind" => "sale",
+        "status" => "success",
+        "amount" => 238.47
+      }
+    ]
+    @shopify_order.total_tax = 13.5
+    @shopify_order.currency = "EUR"
+  end
+
+  def create_session
+    @session = ShopifyAPI::Auth::Session.new(shop: ENV['SHOP'], access_token: cookies[:shopify_app_session])
   end
 end
