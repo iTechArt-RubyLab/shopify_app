@@ -9,7 +9,7 @@
     <th></th>
     <th></th>
   </tr>
-  <% @products.preload(:product_variants).each do |product| %>
+  <% @products.each do |product| %>
     <tr>
       <td><%= link_to product.title, product_path(product) %></td>
       <td><%= product.body_html %></td>
