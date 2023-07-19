@@ -3,9 +3,5 @@ Rails.application.routes.draw do
   get '/login', to: 'shopify_auth#login'
   get '/auth/callback', to: 'shopify_auth#callback'
   resources :products, only: [:index, :show]
-  resources :orders, only: [:index, :show, :create, :update] do
-    member do
-      put :cancel # Для отмены заказа
-    end
-  end
+  resources :orders
 end
