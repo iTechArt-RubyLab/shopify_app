@@ -6,5 +6,4 @@ class ShopifyImportController < ShopifyApiController
   rescue => e
     render plain: "Error importing data: #{e.message}"
   end
-
 end
