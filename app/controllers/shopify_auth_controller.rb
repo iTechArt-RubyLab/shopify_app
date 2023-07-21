@@ -26,7 +26,8 @@ class ShopifyAuthController < ApplicationController
       http_only: true,
       value: auth_result[:session].access_token
     }
-
+    cookies[:shopify_user_id] = auth_result[:session].associated_user&.id
+  
     head :temporary_redirect
     response.set_header('Location', root_path)
   rescue StandardError => e
