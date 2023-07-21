@@ -1,5 +1,4 @@
 module ImportProducts
-
   def import_products_from_shopify
     Product.destroy_all
     products = ShopifyAPI::Product.all(session: @session)
@@ -30,8 +29,8 @@ module ImportProducts
           id: shopify_product.options.first['id'],
           product_id: shopify_product.options.first['product_id'],
           name: shopify_product.options.first['name'],
-          position: shopify_product.options.first['position'],
-          )
+          position: shopify_product.options.first['position']
+        )
         product.create_product_variant(
           barcode: shopify_product.barcode,
           compare_at_price: shopify_product.compare_at_price,
