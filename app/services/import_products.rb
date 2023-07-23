@@ -25,13 +25,13 @@ module ImportProducts
           updated_at: shopify_product.update_at,
           vendor: shopify_product.vendor
         )
-        product.create_product_option(
+        product.product_options.create([
           id: shopify_product.options.first['id'],
           product_id: shopify_product.options.first['product_id'],
           name: shopify_product.options.first['name'],
           position: shopify_product.options.first['position']
-        )
-        product.create_product_variant(
+                                      ])
+        product.product_variants.create([
           barcode: shopify_product.barcode,
           compare_at_price: shopify_product.compare_at_price,
           created_at: shopify_product.created_at,
@@ -53,7 +53,7 @@ module ImportProducts
           taxable: shopify_product.taxable,
           title: shopify_product.title,
           updated_at: shopify_product.updated_at
-        )
+                                       ] )
       end
     end
   end
