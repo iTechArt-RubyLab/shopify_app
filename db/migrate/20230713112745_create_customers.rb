@@ -5,8 +5,6 @@ class CreateCustomers < ActiveRecord::Migration[7.0]
       t.string :email
       t.string :first_name
       t.string :last_name
-      t.datetime :created_at
-      t.datetime :updated_at
       t.boolean :accepts_marketing
       t.datetime :accepts_marketing_updated_at
       t.string :tags
