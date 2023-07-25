@@ -1,4 +1,3 @@
-class Adress< ActiveRecord::Base
+class Adress < ApplicationRecord
   has_many :customers
-
 end
