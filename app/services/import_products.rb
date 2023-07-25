@@ -1,5 +1,9 @@
-module ImportProducts
-  def import_products_from_shopify
+class ImportProducts
+  def initialize(session)
+    @session = session
+  end
+
+  def call
     Product.destroy_all
     products = ShopifyAPI::Product.all(session: @session)
     create_products(products)

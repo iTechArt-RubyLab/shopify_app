@@ -1,7 +1,6 @@
 class ShopifyImportController < ShopifyApiController
-  include ImportProducts
   def import
-    import_products_from_shopify
+    ImportProducts.new(@session).call
     render plain: 'Data imported successfully'
   rescue StandardError => e
     render plain: "Error importing data: #{e.message}"
