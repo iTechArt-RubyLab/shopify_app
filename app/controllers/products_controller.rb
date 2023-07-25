@@ -1,4 +1,4 @@
-class ProductsController < ApplicationController
+class ProductsController < AuthorizedController
   before_action :set_product, only: %i[show edit update destroy]
   before_action :create_session, only: %i[create update destroy]
   
