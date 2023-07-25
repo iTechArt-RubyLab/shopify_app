@@ -82,6 +82,6 @@ test:
 production:
   <<: *default
   url: <%= ENV["SHOPIFY_APP_DATABASE_URL"] %>
-  database: shopify_app_production
-  username: shopify_app
+  database: shopify_app_ax6m
+  username: shopify_admin
   password: <%= ENV["SHOPIFY_APP_DATABASE_PASSWORD"] %>
