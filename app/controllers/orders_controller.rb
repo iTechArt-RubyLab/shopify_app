@@ -22,6 +22,7 @@ class OrdersController < ApplicationController
     if @shopify_order.save!
       @local_order.shopify_id = @shopify_order.id
       @local_order.name = @shopify_order.name
+      #TODO :  @local_order.line_items = @shopify_order.line_items
       @local_order.save!
       redirect_to orders_path, notice: 'Order was successfully created.'
     else
@@ -76,6 +77,37 @@ class OrdersController < ApplicationController
   end
 
   def assign_order_attributes
+    product_ids = params[:order][:product_ids].reject(&:empty?)
+    product_quantities = params[:order][:product_quantities].map(&:to_i)
+    @shopify_order.line_items = []
+    product_ids.each_with_index do |product_id, index|
+      line_item = LineItem.new(
+        title: Product.find_by(id: product_id).title,
+        product_id: product_id,
+        quantity: product_quantities[index],
+        order_id: @shopify_order.id,
+        grams: "1300",
+        price: 50.00,
+
+      )
+      line_item.save
+
+
+      @shopify_order.line_items << line_item
+      end
+=begin
+      @shopify_order.transactions = [
+        {
+          "kind" => "sale",
+          "status" => "success",
+          "amount" => 238.47
+        }
+      ]
+      @shopify_order.total_tax = 13.5
+      @shopify_order.currency = "EUR"
+      end
+=end
+=begin
     @shopify_order.line_items = [
       {
         "title" => "Big Brown Bear Boots",
@@ -91,15 +123,7 @@ class OrdersController < ApplicationController
         ]
       }
     ]
-    @shopify_order.transactions = [
-      {
-        "kind" => "sale",
-        "status" => "success",
-        "amount" => 238.47
-      }
-    ]
-    @shopify_order.total_tax = 13.5
-    @shopify_order.currency = "EUR"
+=end
   end
 
   def create_session
