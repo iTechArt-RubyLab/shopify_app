@@ -4,11 +4,12 @@ class WebhooksController < ApplicationController
   def product_updated
     data = JSON.parse(request.body.read)
     product_id = data['id']
-    
+
+    @shopify_product = ShopifyAPI::Product.find(session: @session, id: @product.shopify_id)
     @product = Product.find_by(shopify_id: product_id)
     if @product
       assign_product_attributes(data)
-      if @product.save!
+      if @product.save! && @shopify_product.save!
         redirect_to @product, notice: 'Product was successfully updated.'
       else
         redirect_to @product, notice: 'Could not update the product.'
