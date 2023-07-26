@@ -1,3 +1,3 @@
-class MetaField < ApplicationRecord
+class Metafield < ApplicationRecord
   has_many :customers
 end

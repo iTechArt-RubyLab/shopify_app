@@ -1,3 +1,3 @@
-class EmailMarketingConsents < ApplicationRecord
+class EmailMarketingConsent < ApplicationRecord
   has_many :customers
 end
