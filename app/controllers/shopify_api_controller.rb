@@ -1,4 +1,4 @@
-class ShopifyApiController < ApplicationController
+class ShopifyApiController < AuthorizedController
   before_action :authenticate_shopify_session
 
   def products
