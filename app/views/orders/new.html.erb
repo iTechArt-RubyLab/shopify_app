@@ -1,5 +1,53 @@
-<h1>Create new order</h1>
+<h1>Create Order</h1>
+<%= form_with(model: @order, local: true) do |form| %>
+  <% if @order.errors.any? %>
+    <div id="error_explanation">
+      <h2>Error while saving an order:</h2>
+      <ul>
+        <% @order.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
 
-<%= render 'form', order: @order %>
+<!--  <div class="field">
+    <%#= form.label :shopify_id %>
+    <%#= form.number_field :shopify_id %>
+  </div>
 
-<%= link_to 'Back', orders_path %>
+  <div class="field">
+    <%#= form.label :name %>
+    <%#= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%#= form.label :total_price %>
+    <%#= form.number_field :total_price %>
+  </div>-->
+  <!-- Чекбоксы для выбора продуктов и полей для ввода количества -->
+  <% Product.all.each do |product| %>
+    <div>
+      <%= check_box_tag "order[product_ids][]", product.id, false %>
+      <%= form.label "order_product_ids_#{product.id}", product.title %>
+      <%= number_field_tag "order[product_quantities][]", 1, in: 1..100, disabled: true %>
+    </div>
+  <% end %>
+  <div class="actions">
+    <%= form.submit "Save" %>
+  </div>
+<% end %>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const productCheckboxes = document.querySelectorAll("[name='order[product_ids][]']");
+        const productQuantityFields = document.querySelectorAll("[name='order[product_quantities][]']");
+
+        productCheckboxes.forEach((checkbox, index) => {
+            checkbox.addEventListener("change", function() {
+                productQuantityFields[index].disabled = !this.checked;
+            });
+        });
+    });
+
+</script>
