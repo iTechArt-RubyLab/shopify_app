@@ -1,4 +1,3 @@
-class MetaField< ActiveRecord::Base
+class MetaField < ApplicationRecord
   has_many :customers
-
 end
