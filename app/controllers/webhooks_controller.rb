@@ -5,11 +5,10 @@ class WebhooksController < ApplicationController
     data = JSON.parse(request.body.read)
     product_id = data['id']
 
-    @shopify_product = ShopifyAPI::Product.find(session: @session, id: @product.shopify_id)
     @product = Product.find_by(shopify_id: product_id)
     if @product
       assign_product_attributes(data)
-      if @product.save! && @shopify_product.save!
+      if @product.save!
         redirect_to @product, notice: 'Product was successfully updated.'
       else
         redirect_to @product, notice: 'Could not update the product.'
@@ -24,7 +23,15 @@ class WebhooksController < ApplicationController
   def assign_product_attributes(data)
     @product.title = data['title']
     @product.body_html = data['body_html']
-    @product.status = data['status']
     @product.vendor = data['vendor']
+    @product.product_type = data['product_type']
+    @product.created_at = data['created_at']
+    @product.handle = data['handle']
+    @product.updated_at = data['updated_at']
+    @product.published_at = data['published_at']
+    @product.template_suffix = data['template_suffix']
+    @product.status = data['status']
+    @product.published_scope = data['published_scope']
+    @product.tags = data['tags']
   end
 end
