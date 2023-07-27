@@ -13,7 +13,13 @@
 
   <body>
   <%= render 'layouts/navbar' %>
-  <br/>
+  <br/>  <% if flash[:notice] %>
+    <%= render 'layouts/notice' %>
+    <br/>
+  <% end %>
+  <% if flash[:alert] %>
+    <%= render 'layouts/alert' %>
+  <% end %>
   <%= yield %>
   <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
