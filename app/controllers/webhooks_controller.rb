@@ -33,5 +33,20 @@ class WebhooksController < ApplicationController
     @product.status = data['status']
     @product.published_scope = data['published_scope']
     @product.tags = data['tags']
+  
+    existing_variant_ids = @product.product_variants.pluck(:id)
+  
+    data['variants'].each do |variant_data|
+      variant_id = variant_data['id']
+      
+      unless existing_variant_ids.include?(variant_id)
+        @variant = @product.product_variants.new
+        @variant.id = variant_id
+        @variant.price = variant_data['price']
+        @variant.sku = variant_data['sku']
+        @variant.inventory_policy = variant_data['inventory_policy']
+        @variant.save!
+      end
+    end
   end
 end
