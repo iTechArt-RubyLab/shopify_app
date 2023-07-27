@@ -6,7 +6,7 @@ class WebhooksController < ApplicationController
     product_id = data['id']
 
     @product = Product.find_by(shopify_id: product_id)
-    if @product
+    if @product.present?
       assign_product_attributes(data)
       if @product.save!
         redirect_to @product, notice: 'Product was successfully updated.'
@@ -21,32 +21,35 @@ class WebhooksController < ApplicationController
   private
   
   def assign_product_attributes(data)
-    @product.title = data['title']
-    @product.body_html = data['body_html']
-    @product.vendor = data['vendor']
-    @product.product_type = data['product_type']
-    @product.created_at = data['created_at']
-    @product.handle = data['handle']
-    @product.updated_at = data['updated_at']
-    @product.published_at = data['published_at']
-    @product.template_suffix = data['template_suffix']
-    @product.status = data['status']
-    @product.published_scope = data['published_scope']
-    @product.tags = data['tags']
+    @product.assign_attributes(
+      title: data['title'],
+      body_html: data['body_html'],
+      vendor: data['vendor'],
+      product_type: data['product_type'],
+      created_at: data['created_at'],
+      handle: data['handle'],
+      updated_at: data['updated_at'],
+      published_at: data['published_at'],
+      template_suffix: data['template_suffix'],
+      status: data['status'],
+      published_scope: data['published_scope'],
+      tags: data['tags']
+    )
   
     existing_variant_ids = @product.product_variants.pluck(:id)
   
-    data['variants'].each do |variant_data|
+    variant_attributes = data['variants'].map do |variant_data|
       variant_id = variant_data['id']
       
-      unless existing_variant_ids.include?(variant_id)
-        @variant = @product.product_variants.new
-        @variant.id = variant_id
-        @variant.price = variant_data['price']
-        @variant.sku = variant_data['sku']
-        @variant.inventory_policy = variant_data['inventory_policy']
-        @variant.save!
-      end
+      {
+        id: variant_id,
+        product_id: @product.id,
+        price: variant_data['price'],
+        sku: variant_data['sku'],
+        inventory_policy: variant_data['inventory_policy']
+      }
     end
+    
+    @product.product_variants.upsert_all(variant_attributes, unique_by: :id)
   end
 end
