@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_26_094147) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_28_065255) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "addresses", force: :cascade do |t|
-    t.integer "customer_id"
+    t.bigint "customer_id"
     t.string "first_name"
     t.string "last_name"
     t.string "company"
@@ -35,7 +35,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_26_094147) do
   end
 
   create_table "customers", force: :cascade do |t|
-    t.integer "shopify_id"
+    t.bigint "shopify_id"
     t.string "email"
     t.string "first_name"
     t.string "last_name"
@@ -53,6 +53,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_26_094147) do
     t.string "note"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "address_id", null: false
+    t.bigint "email_marketing_consent_id", null: false
+    t.index ["address_id"], name: "index_customers_on_address_id"
+    t.index ["email_marketing_consent_id"], name: "index_customers_on_email_marketing_consent_id"
   end
 
   create_table "discount_allocations", force: :cascade do |t|
@@ -65,7 +69,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_26_094147) do
   end
 
   create_table "email_marketing_consents", force: :cascade do |t|
-    t.integer "customer_id"
+    t.bigint "customer_id"
     t.string "state"
     t.string "opt_in_level"
     t.datetime "consent_updated_at"
@@ -226,6 +230,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_26_094147) do
     t.index ["line_item_id"], name: "index_tax_lines_on_line_item_id"
   end
 
+  add_foreign_key "customers", "addresses"
+  add_foreign_key "customers", "email_marketing_consents"
   add_foreign_key "discount_allocations", "line_items"
   add_foreign_key "line_items", "orders"
   add_foreign_key "price_sets", "line_items"
