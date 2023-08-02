@@ -34,6 +34,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_28_065255) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "carts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "customers", force: :cascade do |t|
     t.bigint "shopify_id"
     t.string "email"
