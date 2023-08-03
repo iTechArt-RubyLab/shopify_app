@@ -1,6 +1,6 @@
 class WebhooksController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:product_updated]
-  
+
   def product_updated
     data = JSON.parse(request.body.read)
     product_id = data['id']
@@ -17,9 +17,9 @@ class WebhooksController < ApplicationController
       redirect_to products_path, alert: 'Could not find the product in local database.'
     end
   end
-  
+
   private
-  
+
   def assign_product_attributes(data)
     @product.assign_attributes(
       title: data['title'],
@@ -35,12 +35,12 @@ class WebhooksController < ApplicationController
       published_scope: data['published_scope'],
       tags: data['tags']
     )
-  
-    existing_variant_ids = @product.product_variants.pluck(:id)
-  
+
+    @product.product_variants.pluck(:id)
+
     variant_attributes = data['variants'].map do |variant_data|
       variant_id = variant_data['id']
-      
+
       {
         id: variant_id,
         product_id: @product.id,
@@ -49,7 +49,7 @@ class WebhooksController < ApplicationController
         inventory_policy: variant_data['inventory_policy']
       }
     end
-    
+
     @product.product_variants.upsert_all(variant_attributes, unique_by: :id)
   end
 end
