@@ -24,7 +24,7 @@ class CustomersController < ApplicationController
       @local_customer.save!
       redirect_to customers_path, notice: 'created.'
     else
-      render :new
+      redirect_to customers_path, alert: 'Error while creating the customer'
     end
   end
 
@@ -34,7 +34,7 @@ class CustomersController < ApplicationController
     if @shopify_customer.save! && @customer.update(customer_params)
       redirect_to @customer, notice: 'updated.'
     else
-      render :edit
+      redirect_to customers_path, alert: 'Error while updating the customer'
     end
   end
 
