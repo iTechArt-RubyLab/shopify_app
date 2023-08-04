@@ -1,7 +1,7 @@
-class ProductsController < AuthorizedController
+class ProductsController < ApplicationController
   before_action :set_product, only: %i[show edit update destroy]
   before_action :create_session, only: %i[create update destroy]
-  
+
   def index
     @products = Product.all
   end
@@ -40,9 +40,9 @@ class ProductsController < AuthorizedController
 
   def destroy
     @shopify_product = ShopifyAPI::Product.find(session: @session, id: @product.shopify_id)
-    if @product.destroy && @shopify_product.delete
-      redirect_to products_path, notice: 'The product was successfully destroyed.'
-    end
+    return unless @product.destroy && @shopify_product.delete
+
+    redirect_to products_path, notice: 'The product was successfully destroyed.'
   end
 
   private
