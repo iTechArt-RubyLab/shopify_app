@@ -5,11 +5,7 @@
 <h2>Line items:</h2>
 <ul>
   <% @order.line_items.each do |line_item| %>
-    <li>Title: <%= line_item.title %></li>
-    <li>Quantity: <%= line_item.quantity %></li>
-    <li>Grams: <%= line_item.grams %></li>
-    <li>Price <%= line_item.price %></li>
+    <li>Title: <%= line_item.title %> -- Quantity: <%= line_item.quantity %> -- Price <%= line_item.price %></li>
   <% end %>
 </ul>
-
 <%= link_to 'Back to list', orders_path %>
