@@ -12,11 +12,6 @@ class OrdersController < ApplicationController
     @order = Order.new
   end
 
-  def edit
-    @selected_product_titles = @order.line_items.pluck(:title)
-    @selected_product_quantities = @order.line_items.pluck(:quantity)
-  end
-
   def create
     @shopify_order = ShopifyAPI::Order.new(session: @session)
     @order = Order.new(order_params)
@@ -48,40 +43,6 @@ class OrdersController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-
-  def update
-    @shopify_order = ShopifyAPI::Order.new(session: @session)
-    @shopify_order.id = @order.shopify_id
-
-    #assign_order_attributes
-    @shopify_order.line_items = []
-    if @shopify_order.save!
-      @order.shopify_id = @shopify_order.id
-      @order.name = @shopify_order.name
-      @order.total_price = @shopify_order.total_price
-
-      @shopify_order.line_items.each do  |line_item|
-
-        params = line_item.except("id", "admin_graphql_api_id","properties", "tax_lines", "price_set", "duties", "discount_allocations", "total_discount_set" )
-        params["shopify_id"] = line_item["id"]
-
-
-        order_line_item =  @order.line_items.new(params)
-        order_line_item.price_set = PriceSet.new(line_item["price_set"])
-        #order_line_item.duties.new(line_item["duties"])
-        #order_line_item.discount_allocations.new(line_item["discount_allocations"])
-        #order_line_item.total_discount_set.new(line_item["total_discount_set"])
-
-        order_line_item.save
-      end
-
-      @order.save!
-      redirect_to orders_path
-    else
-      redirect_to orders_path, alert: 'Error while editing the order'
-    end
-  end
-
 
   def cancel
     @shopify_order = ShopifyAPI::Order.find(session: @session, id: @order.shopify_id)
@@ -125,36 +86,6 @@ class OrdersController < ApplicationController
                                       price: 51.00}
     end
   end
-
-  def change_order_attributes
-    product_ids = params[:order][:product_ids].reject(&:empty?)
-    product_quantities = params[:order][:product_quantities].map(&:to_i)
-
-    product_ids.each_with_index do |product_id, index|
-
-      line_item = @shopify_order.line_items.detect { |item| item["id"] == Product.find_by(id: product_id).shopify_id }
-
-      # line_item = @shopify_order.line_items.find_by(product_id: Product.find_by(id: product_id).shopify_id)
-
-      if line_item.present?
-        if params[:order][:product_ids].include?(product_id.to_s)
-          line_item.update(
-            quantity: product_quantities[index],
-          )
-        else
-          line_item.destroy
-        end
-      else
-        @shopify_order.line_items << {  title: Product.find_by(id: product_id).title,
-                                       product_id: Product.find_by(id: product_id).shopify_id,
-                                       quantity: product_quantities[index],
-                                       grams: "1300",
-                                       price: 51.00}
-      end
-    end
-  end
-
-
 
   def create_session
     @session = ShopifyAPI::Auth::Session.new(shop: ENV['SHOP'], access_token: cookies[:shopify_app_session])
