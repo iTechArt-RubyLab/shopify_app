@@ -22,10 +22,11 @@
       <td><%= order.total_price %></td>
       <td><%= order.created_at %></td>
       <td><%= order.updated_at %></td>
-      <td><%= link_to 'Edit', edit_order_path(order) %></td>
     <% if order.canceled_order.present? %>
+      <td><%= button_to 'Edit', edit_order_path(order), disabled: true, class: 'btn btn-primary btn-sm' %></td>
       <td><%= button_to 'Cancel', cancel_order_path(order), disabled: true, method: :post, remote: true, class: 'btn btn-secondary btn-sm' %></td>
     <% else %>
+      <td><%= link_to 'Edit', edit_order_path(order), class: 'btn btn-outline-primary btn-sm' %></td>
       <td><%= button_to 'Cancel', cancel_order_path(order), method: :post, remote: true, class: 'btn btn-outline-secondary btn-sm' %></td>
     <% end %>
       <td><%= button_to 'Delete', order, method: :delete, class: 'btn btn-outline-danger btn-sm' %></td>
