@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_27_100932) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_01_122732) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -80,7 +80,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_27_100932) do
   end
 
   create_table "line_items", force: :cascade do |t|
-    t.integer "shopify_id"
+    t.bigint "shopify_id"
     t.integer "fulfillable_quantity"
     t.string "fulfillment_service"
     t.string "fulfillment_status"
