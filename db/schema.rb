@@ -203,6 +203,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_01_134621) do
     t.string "vendor"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "admin_graphql_api_id"
   end
 
   create_table "properties", force: :cascade do |t|
