@@ -30,9 +30,6 @@ class OrdersController < ApplicationController
 
         order_line_item = @order.line_items.new(params)
         order_line_item.price_set = PriceSet.new(line_item['price_set'])
-        # order_line_item.duties.new(line_item["duties"])
-        # order_line_item.discount_allocations.new(line_item["discount_allocations"])
-        # order_line_item.total_discount_set.new(line_item["total_discount_set"])
 
         order_line_item.save
       end
