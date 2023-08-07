@@ -6,4 +6,5 @@ Rails.application.routes.draw do
   post '/webhooks/shopify/product_updated', to: 'webhooks#product_updated'
   resources :orders, only: [:index, :show]
   resources :products
+  resources :customers
 end

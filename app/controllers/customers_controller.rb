@@ -1,6 +1,7 @@
 class CustomersController < ApplicationController
   before_action :set_customer, only: %i[show edit update]
   before_action :create_session, only: %i[create update destroy]
+  skip_before_action :verify_authenticity_token
 
   def index
     @customers = Customer.all
@@ -9,7 +10,7 @@ class CustomersController < ApplicationController
   def show; end
 
   def new
-    @customer = Customers.new
+    @customer = Customer.new
   end
 
   def edit; end
@@ -38,8 +39,6 @@ class CustomersController < ApplicationController
     end
   end
 
-
-
   private
 
   def set_customer
@@ -47,14 +46,13 @@ class CustomersController < ApplicationController
   end
 
   def customer_params
-    params.require(:customer).permit(:email, :body_html, :status, :vendor)
+    params.require(:customer).permit(:email, :first_name, :last_name)
   end
 
   def assign_customer_attributes(customer_params)
     @shopify_customer.email = customer_params[:email]
-    @shopify_customer.body_html = customer_params[:body_html]
-    @shopify_customer.status = customer_params[:status]
-    @shopify_customer.vendor = customer_params[:vendor]
+    @shopify_customer.first_name = customer_params[:first_name]
+    @shopify_customer.last_name = customer_params[:last_name]
   end
 
   def create_session
