@@ -1,5 +1,5 @@
 class WebhooksController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: %i[product_updated order_cancelled]
+  skip_before_action :verify_authenticity_token, only: %i[product_updated order_cancelled order_updated]
 
   def product_updated
     data = JSON.parse(request.body.read)
@@ -18,11 +18,28 @@ class WebhooksController < ApplicationController
     end
   end
 
+  def order_updated
+    data = JSON.parse(request.body.read)
+    order_id = data['id']
+    @order = Order.find_by(shopify_id: order_id)
+
+    if @order.present?
+      redirect_to @product, notice: 'Product was successfully updated.'
+    else
+      redirect_to products_path, alert: 'Could not find the order in local database.'
+    end
+  end
   def order_cancelled
     data = JSON.parse(request.body.read)
     order_id = data['id']
-
     @order = Order.find_by(shopify_id: order_id)
+
+    if @order.present?
+      CanceledOrder.create(order: @order)
+      redirect_to orders_path
+    else
+      redirect_to @order, alert: 'Error while canceling the order'
+    end
   end
 
   private
@@ -58,9 +75,5 @@ class WebhooksController < ApplicationController
     end
 
     @product.product_variants.upsert_all(variant_attributes, unique_by: :id)
-  end
-
-  def assign_order_attributes
-
   end
 end
