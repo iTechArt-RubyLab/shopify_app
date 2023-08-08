@@ -1,5 +1,5 @@
 class WebhooksController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: %i[product_updated :order_cancelled]
+  skip_before_action :verify_authenticity_token, only: %i[product_updated order_cancelled]
 
   def product_updated
     data = JSON.parse(request.body.read)
