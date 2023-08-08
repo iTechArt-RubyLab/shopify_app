@@ -1,5 +1,5 @@
 class WebhooksController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:product_updated]
+  skip_before_action :verify_authenticity_token, only: %i[product_updated :order_cancelled]
 
   def product_updated
     data = JSON.parse(request.body.read)
@@ -16,6 +16,13 @@ class WebhooksController < ApplicationController
     else
       redirect_to products_path, alert: 'Could not find the product in local database.'
     end
+  end
+
+  def order_cancelled
+    data = JSON.parse(request.body.read)
+    order_id = data['id']
+
+    @order = Order.find_by(shopify_id: order_id)
   end
 
   private
@@ -51,5 +58,9 @@ class WebhooksController < ApplicationController
     end
 
     @product.product_variants.upsert_all(variant_attributes, unique_by: :id)
+  end
+
+  def assign_order_attributes
+
   end
 end
