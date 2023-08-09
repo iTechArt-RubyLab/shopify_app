@@ -1,0 +1,19 @@
+<h1>Found Products</h1>
+<% if @our_products.empty? %>
+  <p>Oops, looks like nothing is here.</p>
+<% else %>
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Edit product</th>
+      <th>Delete product</th>
+    </tr>
+    <% @our_products.each do |product| %>
+      <tr>
+        <td><%= link_to product.title, product_path(product) %></td>
+        <td><%= link_to 'Edit', edit_product_path(product) %></td>
+        <td><%= button_to 'Destroy', product_path(product), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

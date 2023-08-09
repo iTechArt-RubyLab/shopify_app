@@ -53,7 +53,6 @@ class ProductsController < ApplicationController
     request = Net::HTTP::Post.new(url.path)
     request['Content-Type'] = 'application/json'
     request['X-Shopify-Access-Token'] = cookies[:shopify_app_session]
-  
     request.body = {
       query: <<~GRAPHQL,
         query($searchTerm: String) {
@@ -67,12 +66,15 @@ class ProductsController < ApplicationController
           }
         }
       GRAPHQL
-      variables: { "searchTerm" => params[:query] }
+      variables: { searchTerm: params[:query] }
     }.to_json
   
     response = http.request(request)
     result = JSON.parse(response.body)
-    render json: result
+    @products = result.dig("data", "products", "edges").to_a
+    @our_products = @products.map do |product|
+      Product.find_by(shopify_id: product.dig("node", "id").split("/").last)
+    end
   end
 
   private
