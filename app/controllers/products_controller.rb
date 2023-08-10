@@ -1,6 +1,6 @@
 class ProductsController < ApplicationController
   before_action :set_product, only: %i[show edit update destroy]
-  before_action :create_session, only: %i[create update destroy]
+  before_action :create_session, only: %i[create update destroy search]
 
   def index
     @products = Product.all
@@ -43,6 +43,38 @@ class ProductsController < ApplicationController
     return unless @product.destroy && @shopify_product.delete
 
     redirect_to products_path, notice: 'The product was successfully destroyed.'
+  end
+
+  def search
+    url = URI.parse('https://rubylab2.myshopify.com/admin/api/2023-04/graphql.json')
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+  
+    request = Net::HTTP::Post.new(url.path)
+    request['Content-Type'] = 'application/json'
+    request['X-Shopify-Access-Token'] = cookies[:shopify_app_session]
+    request.body = {
+      query: <<~GRAPHQL,
+        query($searchTerm: String) {
+          products(first: 10, query: $searchTerm) {
+            edges {
+              node {
+                id
+                title
+              }
+            }
+          }
+        }
+      GRAPHQL
+      variables: { searchTerm: params[:query] }
+    }.to_json
+  
+    response = http.request(request)
+    result = JSON.parse(response.body)
+    @products = result.dig("data", "products", "edges").to_a
+    @our_products = @products.map do |product|
+      Product.find_by(shopify_id: product.dig("node", "id").split("/").last)
+    end
   end
 
   private
